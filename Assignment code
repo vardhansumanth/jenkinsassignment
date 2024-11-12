@@ -1,0 +1,27 @@
+pipeline {
+  agent any
+  stages {
+    stage('Init') {
+      steps {
+        sh 'terraform init'
+      }
+    }
+    stage('Plan') {
+      steps {
+        sh 'terraform plan'
+      }
+    }
+    stage('Apply') {
+      steps {
+        sh 'terraform apply -auto-approve'
+      }
+    }
+  }
+  post {
+    failure {
+      mail to: 'Sumanthv1119@gmail.com', 
+           subject: 'Terraform Pipeline Failed', 
+           body: "Pipeline failed at ${currentBuild.currentResult}: ${env.BUILD_URL}"
+    }
+  }
+}
